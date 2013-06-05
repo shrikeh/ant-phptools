@@ -1,0 +1,3 @@
+<?php
+// PHPUnit bootstrap
+require_once @phptools.phpunit.autoload@;
