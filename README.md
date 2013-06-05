@@ -33,7 +33,7 @@ git clone https://github.com/shrikeh/ant-phptools.git
 Then, in your ant `build.xml` file, reference the `tests.xml` file by `<include>` (not `<import>`):
 
 ```xml
-<include file="${basedir}/php-build-tools/tests.xml"/>
+<include file="${basedir}/ant-phptools/tests.xml"/>
 ```
 
 To use the tests, you can then simply add a reference to the tests within, such as:
