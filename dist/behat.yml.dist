@@ -1,0 +1,4 @@
+default:
+    paths:
+        features: @phptools.behat.features@
+        bootstrap: @phptools.behat.bootstrap@
