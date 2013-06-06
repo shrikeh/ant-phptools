@@ -92,5 +92,9 @@ There are several ways to configure the include:
 ```
 * Alternatively, you can set individual values. Because ant works on the theory that variables already configured are read only, you can set variables prior to running the `tests-parallel` target and all will be well.
 
+## @todo and coming soon
+* Support for Composer self-update, install and update is included in composer.xml, but currently undocumented.
+* The build will try and create phpunit.xml if it can't find one. This should be configurable.
+* Full documentation for every variable
 
 
