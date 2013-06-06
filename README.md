@@ -43,6 +43,42 @@ To use the tests, you can then simply add a reference to the tests within, such 
 
 For every existing hook, the tools will check to see if the corresponding phar is available, and if so, it will assume the target is to be run. Thus, by adding or subtracting from your require-dev section of the `composer.json` file, your ant file will automatically run the new automated testing referenced.
 
+These tools assume you have your tools installed to `vendor/bin`. To achieve this, add the following to your `composer.json` file:
+
+```json
+    "config": {
+        "bin-dir": "vendor/bin"
+    },
+
+```
+However, you don't need to do this if you don't want to. There are a couple of variables you can change either in a properties file or in your build.xml to change this.
+
+If you want to change the bin-dir globally, set a variable called `phptools.bindir` in your `build.xml` file:
+
+```xml
+<property name="phptools.bindir" value="/path/to/tools/bin" />
+```
+
+Or in your `.properties` file:
+```
+phptools.bindir = /path/to/tools/bin
+```
+
+If you don't use a bin dir for your tools, you can override either the path, the file, or both, for each tool:
+
+```xml
+<property name="phptools.phpdox.phar" value="/path/to/phpdox/phar" />
+<property name="phptools.phpunit.phar.path" value="/path/to/phpunit" />
+```
+Each `phar` variable is constructed in the following format:
+
+```
+phptools.[tool].phar = ${phptools.[tool].phar.path}/${phptools.[tool].phar.file}
+
+```
+
+Which allows you to change either the path or the file, or simply override the resultant `.phar` variable if you prefer.
+
 
 ## Further configuration
 By default, the `tests.xml` uses sensible Symfony-style defaults for paths. However, ALL of the variables it uses are variables, allowing as much configuration as you wish.
