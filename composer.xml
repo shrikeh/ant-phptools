@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="composer" basedir=".">
+    <dirname property="composer.basedir" file="${ant.file.composer}"/>
+    <target name="init" unless="composer.properties">
+        <property name="composer.file" value="composer.properties" />
+        <property name="composer.properties" location="${composer.basedir}/${composer.file}" />
+        <property file="${composer.properties}" />
+        <echo message="using composer properties from ${composer.properties}" level="debug"/>
+        <property name="composer.properties.filter" location="${composer.properties.tmp}" />
+        <echoproperties destfile="${composer.properties.filter}" prefix="composer."/>
+        <echo message="Expanded properties put into ${composer.properties.filter}" />
+    </target>
+    <target name="exists" description="Check that composer exists">
+        <available property="composer.run" file="${composer.phar}" />
+    </target>
+    <!-- Self-update composer -->
+    <target name="self-update" if="composer.self-update" description="Self-update Composer">
+        <echo message="Self-updating composer" level="debug"/>
+        <exec executable="${composer.phar}">
+            <arg value="self-update" />
+            <arg value="--quiet" />
+            <arg value="--no-interaction" />
+        </exec>
+        <echo message="composer self-update complete" level="debug"/>
+    </target>
+
+    <target name="composer" depends="init, self-update" if="${composer.run}">
+        <condition property="composer.dev" value="--dev" else="--no-dev">
+             <isset property="phptools.env" />
+        </condition>
+        <condition property="composer.command" value="update" else="install">
+            <available file="${composer.lock}"/>
+        </condition>
+        <echo message="Beginning composer ${composer.command}" level="debug" />
+        <exec executable="${composer.phar}">
+            <arg value="${composer.command}" />
+            <arg value="--no-interaction" />
+            <arg value="--optimize-autoloader" />
+            <arg value="${phptools/composer.dev}" />
+        </exec>
+        <echo message="composer ${composer.command} complete" level="debug"/>
+    </target>
+</project>

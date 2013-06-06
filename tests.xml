@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project name="phptools" basedir=".">
     <dirname property="phptools.basedir" file="${ant.file.phptools}"/>
     <target name="tools-init" unless="phptools.properties">
         <property name="phptools.file" value="php-build-tools.properties" />
         <property name="phptools.properties" location="${phptools.basedir}/${phptools.file}" />
         <property file="${phptools.properties}" />
-        <echo message="using php tools properties from ${phptools.properties}" />
-        <property name="phptools.properties.filter" location="${phptools.properties.tmp}.${ant.project.name}" />
+        <echo message="using php tools properties from ${phptools.properties}" level="debug"/>
+        <property name="phptools.properties.filter" location="${phptools.properties.tmp}" />
         <echoproperties destfile="${phptools.properties.filter}" prefix="phptools."/>
         <echo message="Expanded properties put into ${phptools.properties.filter}" />
     </target>
@@ -28,17 +27,17 @@
     </target>
     <target name="phpunit.exists" unless="phptools.phpunit.run" description="check if phpunit exists">
         <available property="phptools.phpunit.run" file="${phptools.phpunit.phar}" />
-        <available property="phptools.phpunit.bootstrap.exists" file="${phptools.phpunit.bootstrap}" />
-        <available property="phptools.phpunit.config.exists" file="${phptools.phpunit.config}" />
+        <available property="phptools.phpunit.bootstrap.nocopy" file="${phptools.phpunit.bootstrap}" />
+        <available property="phptools.phpunit.config.nocopy" file="${phptools.phpunit.config}" />
     </target>
-    <target name="phpunit.bootstrap.copy" if="phptools.phpunit.run" unless="phptools.phpunit.bootstrap.exists"
+    <target name="phpunit.bootstrap.copy" if="phptools.phpunit.run" unless="phptools.phpunit.bootstrap.nocopy"
         description="Copy a phpunit config file with sensible defaults if none exists">
         <echo message="Copying  ${phptools.phpunit.dist.bootstrap} to ${phptools.phpunit.bootstrap}" level="debug" />
         <copy file="${phptools.phpunit.dist.bootstrap}" tofile="${phptools.phpunit.bootstrap}" overwrite="false" filtering="true">
             <filterset filtersfile="${phptools.properties.filter}"/>
         </copy>
     </target>
-    <target name="phpunit.config.copy" if="phptools.phpunit.run" unless="phptools.phpunit.config.exists"
+    <target name="phpunit.config.copy" if="phptools.phpunit.run" unless="phptools.phpunit.config.nocopy"
         description="Copy a phpunit config file with sensible defaults if none exists">
         <echo message="Copying ${phptools.phpunit.dist.config} to ${phptools.phpunit.config}" level="debug" />
         <copy file="${phptools.phpunit.dist.config}" tofile="${phptools.phpunit.config}" overwrite="false" filtering="true">
@@ -57,9 +56,9 @@
     <!-- Run Behat tests (http://behat.org/) -->
     <target name="behat.exists" unless="phptools.behat.run">
         <available property="phptools.behat.run" file="${phptools.behat.phar}" />
-        <available property="phptools.behat.config.exists" file="${phptools.behat.config}" />
+        <available property="phptools.behat.config.nocopy" file="${phptools.behat.config}" />
     </target>
-    <target name="behat.config.copy" if="phptools.behat.run" unless="phptools.behat.config.exists"
+    <target name="behat.config.copy" if="phptools.behat.run" unless="phptools.behat.config.nocopy"
         description="Copy a behat config file with sensible defaults if none exists">
         <echo message="Copying ${phptools.behat.dist.config} to ${phptools.behat.config}" level="debug" />
         <copy file="${phptools.behat.dist.config}" tofile="${phptools.behat.config}" overwrite="false" filtering="true">
@@ -97,9 +96,9 @@
     <!-- Generate API documentation -->
     <target name="phpdox.exists" unless="phptools.phpdox.run" description="Test that the phpdox phar is available">
         <available property="phptools.phpdox.run" file="${phptools.phpdox.phar}" />
-        <available property="phpdox.config.exists" file="${phptools.phpdox.config}" />
+        <available property="phpdox.config.npcopy" file="${phptools.phpdox.config}" />
     </target>
-    <target name="phpdox.copy" if="phptools.phpdox.run" unless="phptools.phpdox.config.exists"
+    <target name="phpdox.copy" if="phptools.phpdox.run" unless="phptools.phpdox.config.nocopy"
         description="Copy a phpDox config file with sensible defaults if none exists">
         <echo message="No existing phpDox config found, copying ${phptools.phpdox.dist} to ${phptools.phpdox.config}" level="debug" />
         <copy file="${phptools.phpdox.dist}" tofile="${phptools.phpdox.config}" overwrite="false" filtering="true">
@@ -195,9 +194,9 @@
     <!-- PHP Mess Detector -->
     <target name="phpmd.exists" unless="phptools.phpmd.run">
         <available property="phptools.phpmd.run" file="${phptools.phpmd.phar}"/>
-        <available property="phptools.phpdox.config.exists" file="${phptools.phpmd.config}"/>
+        <available property="phptools.phpdox.config.nocopy" file="${phptools.phpmd.config}"/>
     </target>
-    <target name="phpmd.copy" if="phptools.phpdox.run" unless="phptools.phpdox.config.exists">
+    <target name="phpmd.copy" if="phptools.phpdox.run" unless="phptools.phpdox.config.nocopy">
         <echo message="No existing phpmd config found, copying ${phptools.phpmd.dist} to ${phptools.phpmd.config}" level="debug" />
         <copy file="${phptools.phpmd.dist}" tofile="${phptools.phpmd.config}" overwrite="false" filtering="true">
             <filterset filtersfile="${phptools.properties.filter}"/>
