@@ -3,66 +3,144 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
     <title>Ant-phptools by shrikeh</title>
   </head>
 
   <body>
-
     <header>
-      <div class="container">
+      <div class="inner">
         <h1>Ant-phptools</h1>
         <h2>A Composer-friendly port of the PEAR-based Template for Jenkins Jobs for PHP Projects (http://jenkins-php.org)</h2>
-
-        <section id="downloads">
-          <a href="https://github.com/shrikeh/ant-phptools/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/shrikeh/ant-phptools/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/shrikeh/ant-phptools" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
+        <a href="https://github.com/shrikeh/ant-phptools" class="button"><small>View project on</small>GitHub</a>
       </div>
     </header>
 
-    <div class="container">
-      <section id="main_content">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="ant-phptools" class="anchor" href="#ant-phptools"><span class="octicon octicon-link"></span></a>ant-phptools</h1>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>A Composer-friendly port of the PEAR-based Template for Jenkins Jobs for PHP Projects (<a href="http://jenkins-php.org">http://jenkins-php.org</a>)</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<h2>
+<a name="theory-of-operation" class="anchor" href="#theory-of-operation"><span class="octicon octicon-link"></span></a>Theory of operation</h2>
+
+<p>While the Jenkins Jobs relies on PEAR, this port relies on the new hotness that is Composer (<a href="http://getcomposer.org/">http://getcomposer.org/</a>).
+While PEAR is a system-level library container, Composer is an application-level dependency manager, which allows more granularity of control over which libraries and version are required for use.
+To get around the need for granular controls for testing, a Jenkins admin would have to install ALL the dependencies system-wide to meet any variety of testing criteria (TDD, BDD, SpecBDD, etc).</p>
+
+<p>This library gets around this by keeping in sync with the application composer dependencies. It has hooks for:</p>
+
+<ul>
+<li>PHPUnit (<a href="https://github.com/sebastianbergmann/phpunit">https://github.com/sebastianbergmann/phpunit</a>)</li>
+<li>Behat (<a href="http://behat.org/">http://behat.org/</a>)</li>
+<li>PHPSpec2 (<a href="http://phpspec.net/">http://phpspec.net/</a>)</li>
+<li>phpmd (PHP Mess Detector - <a href="http://phpmd.org/">http://phpmd.org/</a>)</li>
+<li>phpcb (PHP Code Browser - <a href="https://github.com/Mayflower/PHP_CodeBrowser">https://github.com/Mayflower/PHP_CodeBrowser</a>)</li>
+<li>phpcpd (PHP Copy Paste Detector - <a href="https://github.com/sebastianbergmann/phpcpd">https://github.com/sebastianbergmann/phpcpd</a>)</li>
+<li>phploc (PHP Lines of Code - <a href="https://github.com/sebastianbergmann/phploc">https://github.com/sebastianbergmann/phploc</a>)</li>
+<li>phpcs (PHP_CodeSniffer - <a href="https://github.com/squizlabs/PHP_CodeSniffer">https://github.com/squizlabs/PHP_CodeSniffer</a>)</li>
+<li>pdepend (PHP_Depend - <a href="http://pdepend.org/">http://pdepend.org/</a>)</li>
+</ul><h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Clone or download this repo into a location readable by ant:</p>
+
+<pre lang="shell"><code>git clone https://github.com/shrikeh/ant-phptools.git
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p>Then, in your ant <code>build.xml</code> file, reference the <code>tests.xml</code> file by <code>&lt;include&gt;</code> (not <code>&lt;import&gt;</code>):</p>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<div class="highlight"><pre><span class="nt">&lt;include</span> <span class="na">file=</span><span class="s">"${basedir}/ant-phptools/tests.xml"</span><span class="nt">/&gt;</span>
+</pre></div>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>To use the tests, you can then simply add a reference to the tests within, such as:</p>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<div class="highlight"><pre><span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">"test"</span> <span class="na">depends=</span><span class="s">"prepare, phptools.phptests-parallel"</span> <span class="nt">/&gt;</span>
+</pre></div>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<p>For every existing hook, the tools will check to see if the corresponding phar is available, and if so, it will assume the target is to be run. Thus, by adding or subtracting from your require-dev section of the <code>composer.json</code> file, your ant file will automatically run the new automated testing referenced.</p>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<p>These tools assume you have your tools installed to <code>vendor/bin</code>. To achieve this, add the following to your <code>composer.json</code> file:</p>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<div class="highlight"><pre>    <span class="s2">"config"</span><span class="err">:</span> <span class="p">{</span>
+        <span class="nt">"bin-dir"</span><span class="p">:</span> <span class="s2">"vendor/bin"</span>
+    <span class="p">}</span><span class="err">,</span>
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+</pre></div>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
+<p>However, you don't need to do this if you don't want to. There are a couple of variables you can change either in a properties file or in your build.xml to change this.</p>
+
+<p>If you want to change the bin-dir globally, set a variable called <code>phptools.bindir</code> in your <code>build.xml</code> file:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"phptools.bindir"</span> <span class="na">value=</span><span class="s">"/path/to/tools/bin"</span> <span class="nt">/&gt;</span>
+</pre></div>
+
+<p>Or in your <code>.properties</code> file:</p>
+
+<pre><code>phptools.bindir = /path/to/tools/bin
+</code></pre>
+
+<p>If you don't use a bin dir for your tools, you can override either the path, the file, or both, for each tool:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"phptools.phpdox.phar"</span> <span class="na">value=</span><span class="s">"/path/to/phpdox/phar"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"phptools.phpunit.phar.path"</span> <span class="na">value=</span><span class="s">"/path/to/phpunit"</span> <span class="nt">/&gt;</span>
+</pre></div>
+
+<p>Each <code>phar</code> variable is constructed in the following format:</p>
+
+<pre><code>phptools.[tool].phar = ${phptools.[tool].phar.path}/${phptools.[tool].phar.file}
+
+</code></pre>
+
+<p>Which allows you to change either the path or the file, or simply override the resultant <code>.phar</code> variable if you prefer.</p>
+
+<h2>
+<a name="further-configuration" class="anchor" href="#further-configuration"><span class="octicon octicon-link"></span></a>Further configuration</h2>
+
+<p>By default, the <code>tests.xml</code> uses sensible Symfony-style defaults for paths. However, ALL of the variables it uses are variables, allowing as much configuration as you wish.</p>
+
+<p>There are several ways to configure the include:</p>
+
+<ul>
+<li>If you do not wish to use the default <code>php-build-tools.properties</code> file, copy the file, alter the values you wish, and simply set the <code>${phptools.properties}</code> to the path of the new file:</li>
+</ul><div class="highlight"><pre><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"${phptools.properties}"</span> <span class="na">location=</span><span class="s">"phptools.properties.local"</span> <span class="nt">/&gt;</span>
+</pre></div>
+
+<ul>
+<li>Alternatively, you can set individual values. Because ant works on the theory that variables already configured are read only, you can set variables prior to running the <code>tests-parallel</code> target and all will be well.</li>
+</ul>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/shrikeh/ant-phptools/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/shrikeh/ant-phptools/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/shrikeh/ant-phptools"></a> is maintained by <a href="https://github.com/shrikeh">shrikeh</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
     </div>
 
-              <script type="text/javascript">
+            <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
