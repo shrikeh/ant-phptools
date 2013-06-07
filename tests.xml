@@ -6,9 +6,13 @@
         <property name="phptools.properties" location="${phptools.basedir}/${phptools.file}" />
         <property file="${phptools.properties}" />
         <echo message="using php tools properties from ${phptools.properties}" level="debug"/>
-        <property name="phptools.properties.filter" location="${phptools.properties.tmp}" />
+        <!-- Use a timestamp to avoid collisions between builds of the same project -->
+        <tstamp>
+            <format property="phptools.properties.time" pattern="yyyyMMdd_HHmmss" />
+        </tstamp>
+        <property name="phptools.properties.filter" location="${phptools.properties.tmp}-${phptools.properties.time}" />
         <echoproperties destfile="${phptools.properties.filter}" prefix="phptools."/>
-        <echo message="Expanded properties put into ${phptools.properties.filter}" />
+        <echo message="Expanded properties put into ${phptools.properties.filter}" level="debug"/>
     </target>
 
     <target name="phptests-parallel" depends="tools-init, lint">
