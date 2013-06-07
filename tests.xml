@@ -15,9 +15,10 @@
         <echo message="Expanded properties put into ${phptools.properties.filter}" level="verbose"/>
     </target>
 
-    <target name="phptests" depends="phptests-parallel, phptests-serial" />
+    <target name="phptests" depends="phptests-parallel, phptests-serial"
+        description="Entry point for php tests."/>
 
-    <target name="phptests-serial"  depends="tools-init, lint" unless="${phptools.parallel}"
+    <target name="phptests-serial" depends="tools-init, lint" unless="${phptools.parallel}"
         description="Run PHP tools in serial (after lint)">
         <echo message="Running PHP tools in serial mode" level="verbose"/>
         <antcall target="phptools.phpunit"/>
