@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="sample-project" basedir="." default="test">
+    <property name="builddir" location="${basedir}/build" />
+    <include file="${basedir}/ant-phptools/tests.xml" as="phptools"/>
+    <include file="${basedir}/ant-phptools/composer.xml" as="composer"/>
+    <target name="init">
+        <echo message="Project: ${ant.project.name}" />
+        <echo message="Environment: ${build.env}"/>
+        <echo message="Hudson build ID: ${env.BUILD_ID}"/>
+        <echo message="Hudson build number: ${env.BUILD_NUMBER}"/>
+        <echo message="git revision: ${env.GIT_REVISION}"/>
+        <tstamp>
+            <format property="build.datetime" pattern="dd-MMM-yy HH:mm:ss"/>
+        </tstamp>
+        <echo message="Build started at ${build.datetime}"/>
+    </target>
+
+    <!-- Clean up previous build artifacts -->
+    <target name="clean" description="Cleanup previous build artifacts">
+        <echo message="Cleaning up ${builddir}" level="verbose"/>
+        <delete dir="${builddir}/api"/>
+        <delete dir="${builddir}/code-browser"/>
+        <delete dir="${builddir}/coverage"/>
+        <delete dir="${builddir}/logs"/>
+        <delete dir="${builddir}/pdepend"/>
+        <delete dir="${builddir}/phpdox"/>
+        <delete dir="${builddir}/reports"/>
+    </target>
+
+    <!-- Set up directories used for build -->
+    <target name="prepare" depends="clean" description="Prepare for build">
+        <echo message="Preparing ${builddir}" level="verbose" />
+        <mkdir dir="${builddir}/api"/>
+        <mkdir dir="${builddir}/code-browser"/>
+        <mkdir dir="${builddir}/coverage"/>
+        <mkdir dir="${builddir}/logs"/>
+        <mkdir dir="${builddir}/pdepend"/>
+        <mkdir dir="${builddir}/phpdox"/>
+        <mkdir dir="${builddir}/reports"/>
+    </target>
+
+    <target name="test" depends="prepare, phptools.phptests" />
+</project>
