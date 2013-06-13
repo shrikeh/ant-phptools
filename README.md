@@ -43,15 +43,15 @@ To use the tests, you can then simply add a reference to the tests within, such 
 
 For every existing hook, the tools will check to see if the corresponding phar is available, and if so, it will assume the target is to be run. Thus, by adding or subtracting from your require-dev section of the `composer.json` file, your ant file will automatically run the new automated testing referenced.
 
-These tools assume you have your tools installed to `vendor/bin`. To achieve this, add the following to your `composer.json` file:
+These tools assume you have your tools installed to `vendor/bin`, which is the default. To achieve another location, add the following to your `composer.json` file:
 
 ```json
     "config": {
-        "bin-dir": "vendor/bin"
+        "bin-dir": "some-other-dir/bin"
     },
 
 ```
-However, you don't need to do this if you don't want to. There are a couple of variables you can change either in a properties file or in your build.xml to change this.
+There are a couple of variables you should change either in a properties file or in your build.xml if you wish to do this.
 
 If you want to change the bin-dir globally, set a variable called `phptools.bindir` in your `build.xml` file:
 
