@@ -11,28 +11,40 @@
         <echo message="Expanded properties put into ${composer.properties.filter}" />
     </target>
     <target name="exists" description="Check that composer exists">
-        <available property="composer.run" file="${composer.phar}" />
+        <available property="composer.exists" file="${composer.phar}" />
+    </target>
+
+    <!-- Self-install Composer if necessary -->
+    <target name="self-install" description="Fetch Composer if it doesn't exist">
+
     </target>
     <!-- Self-update composer -->
     <target name="self-update" if="composer.self-update" description="Self-update Composer">
-        <echo message="Self-updating composer" level="debug"/>
+        <echo message="Self-updating composer" level="verboser"/>
         <exec executable="${composer.phar}">
             <arg value="self-update" />
             <arg value="--quiet" />
             <arg value="--no-interaction" />
         </exec>
-        <echo message="composer self-update complete" level="debug"/>
+        <echo message="composer self-update complete" level="verbose"/>
     </target>
 
-    <target name="composer" depends="init, self-update" if="${composer.run}">
+    <target name="composer" depends="init, self-update" if="${composer.exists}">
         <condition property="composer.dev" value="--dev" else="--no-dev">
              <isset property="phptools.env" />
         </condition>
         <condition property="composer.command" value="update" else="install">
             <available file="${composer.lock}"/>
         </condition>
-        <echo message="Beginning composer ${composer.command}" level="debug" />
+        <echo message="Beginning composer ${composer.command}" level="verbose" />
         <exec executable="${composer.phar}">
+            <env key="COMPOSER" value="${composer.env.composer}"/>
+            <env key="COMPOSER_VENDOR_DIR" value="${composer.env.vendordir}"/>
+            <env key="COMPOSER_BIN_DIR" value="${composer.env.bindir}"/>
+            <env key="COMPOSER_HOME" value="${composer.env.home}"/>
+            <env key="COMPOSER_PROCESS_TIMEOUT" value="${composer.env.process_timeout}"/>
+            <env key="COMPOSER_DISCARD_CHANGES" value="${composer.env.discard-changes}"/>
+            <env key="COMPOSER_NO_INTERACTION" value="${composer.env.nointeraction}" />
             <arg value="${composer.command}" />
             <arg value="--no-interaction" />
             <arg value="--optimize-autoloader" />
