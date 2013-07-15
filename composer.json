@@ -1,0 +1,18 @@
+{
+    "name": "shrikeh/ant-phptools",
+    "description": "Composer-friendly implementation of Jenkins PHP build tools",
+    "homepage": "https://github.com/shrikeh/ant-phptools",
+    "type": "library",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Richard George",
+            "email": "Richard.George@fitchlearning.com"
+        },
+        {
+            "name": "Barney Hanlon",
+            "email": "TBC@somwhere.com"
+        }
+    ]
+
+}
