@@ -227,7 +227,7 @@
             <arg value="--standard=${phptools.phpcs.standard}" />
             <arg value="--report=${phptools.phpcs.report-format}" />
             <arg value="--report-file=${phptools.phpcs.report}" />
-            <arg value="--report-summary" />
+            <arg value="--report-summary=${phptools.phpcs.report}.summary.log" />
             <arg path="${phptools.phpcs.srcdir}" />
         </exec>
         <echo message="PHP CodeSniffer complete, logged to ${phptools.phpcs.report}" level="${phptools.phpcs.echolevel}"/>
