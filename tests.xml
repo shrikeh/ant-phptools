@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="phptools" basedir=".">
     <dirname property="phptools.basedir" file="${ant.file.phptools}"/>
-    <target name="tools-init" unless="phptools.properties">
-        <property name="phptools.file" value="php-build-tools.properties" />
-        <property name="phptools.properties" location="${phptools.basedir}/${phptools.file}" />
-        <property file="${phptools.properties}" />
+
+    <target name="tools-init-fallback" unless="phptools.properties">
+        <property name="phptools.file" value="php-build-tools.properties"/>
+        <property name="phptools.properties" location="${phptools.basedir}/${phptools.file}"/>
+    </target>
+
+    <target name="tools-init" depends="tools-init-fallback">
+        <property file="${phptools.properties}"/>
         <echo message="using php tools properties from ${phptools.properties}" level="verbose"/>
         <!-- Use a timestamp to avoid collisions between builds of the same project -->
         <tstamp>
@@ -51,7 +55,7 @@
         <echo message="tools complete, generating documentation" level="verbose"/>
         <antcall target="phptools.phpdox" />
     </target>
-    <target name="phpunit.exists" unless="phptools.phpunit.run" description="check if phpunit exists">
+    <target name="phpunit.exists" unless="phptools.phpunit.run" description="check if phpunit exists" depends="tools-init">
         <available property="phptools.phpunit.run" file="${phptools.phpunit.phar}" />
         <available property="phptools.phpunit.bootstrap.nocopy" file="${phptools.phpunit.bootstrap}" />
         <available property="phptools.phpunit.config.nocopy" file="${phptools.phpunit.config}" />
@@ -122,7 +126,8 @@
     </target>
 
     <!-- Generate API documentation -->
-    <target name="phpdox.exists" unless="phptools.phpdox.run" description="Test that the phpdox phar is available">
+    <target name="phpdox.exists" unless="phptools.phpdox.run" description="Test that the phpdox phar is available"
+            depends="tools-init">
         <available property="phptools.phpdox.run" file="${phptools.phpdox.phar}" />
         <available property="phpdox.config.npcopy" file="${phptools.phpdox.config}" />
     </target>
@@ -144,7 +149,7 @@
         <echo message="documentation generation complete" level="${phptools.phpdox.echolevel}" />
     </target>
 
-    <target name="pdepend.exists" unless="phptools.pdepend.run">
+    <target name="pdepend.exists" unless="phptools.pdepend.run" depends="tools-init">
         <available property="phptools.pdepend.run" file="${phptools.pdepend.phar}" />
     </target>
     <target name="pdepend" depends="pdepend.exists" if="${phptools.pdepend.run}"
@@ -160,7 +165,7 @@
     </target>
 
     <!-- PHP Copy paste detector tests -->
-    <target name="phpcpd.exists" unless="phptools.phpcpd.run">
+    <target name="phpcpd.exists" unless="phptools.phpcpd.run" depends="tools-init">
         <available property="phptools.phpcpd.run" file="${phptools.phpcpd.phar}" />
     </target>
     <target name="phpcpd" depends="phpcpd.exists" if="${phptools.phpcpd.run}"
@@ -175,7 +180,7 @@
     </target>
 
     <!-- Setup PHP_CodeBrowser (https://github.com/Mayflower/PHP_CodeBrowser) -->
-    <target name="phpcb.exists">
+    <target name="phpcb.exists" depends="tools-init">
         <available property="phptools.phpcb.run" file="${phptools.phpcb.phar}" />
     </target>
     <target name="phpcb" depends="phpcb.exists" if="${phptools.phpcb.run}"
@@ -204,7 +209,7 @@
         <echo message="Lint complete" level="${phptools.lint.echolevel}"/>
     </target>
 
-    <target name="phploc.exists" unless="phptools.phploc.run">
+    <target name="phploc.exists" unless="phptools.phploc.run" depends="tools-init">
         <available property="phptools.phploc.run" file="${phptools.phploc.phar}"/>
     </target>
     <target name="phploc" depends="phploc.exists" if="${phptools.phploc.run}" description="Measure project size using PHPLOC">
@@ -218,7 +223,7 @@
     </target>
 
     <!-- PHP CodeSniffer tests -->
-    <target name="phpcs.exists" unless="phptools.phpcs.run">
+    <target name="phpcs.exists" unless="phptools.phpcs.run" depends="tools-init">
         <available property="phptools.phpcs.run" file="${phptools.phpcs.phar}" />
     </target>
     <target name="phpcs-ci" depends="phpcs.exists" if="${phptools.phpcs.run}" description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
@@ -234,7 +239,7 @@
     </target>
 
     <!-- PHP Mess Detector -->
-    <target name="phpmd.exists" unless="phptools.phpmd.run">
+    <target name="phpmd.exists" unless="phptools.phpmd.run" depends="tools-init">
         <available property="phptools.phpmd.run" file="${phptools.phpmd.phar}"/>
         <available property="phptools.phpdox.config.nocopy" file="${phptools.phpmd.config}"/>
     </target>
