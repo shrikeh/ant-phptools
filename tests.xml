@@ -198,7 +198,7 @@
             level="${phptools.phpcb.echolevel}" />
     </target>
 
-    <target name="lint">
+    <target name="lint" description="Perform static code checking of PHP files" depends="tools-init">
         <echo message="Beginning lint tests" level="${phptools.lint.echolevel}"/>
         <apply executable="php" failonerror="${phptools.lint.failonerror}">
             <arg value="-l" />
@@ -233,6 +233,7 @@
             <arg value="--report=${phptools.phpcs.report-format}" />
             <arg value="--report-file=${phptools.phpcs.report}" />
             <arg value="--report-summary=${phptools.phpcs.report}.summary.log" />
+             <!-- Quick fix for XML overwritten by summary; FIXME make this properly configurable -->
             <arg path="${phptools.phpcs.srcdir}" />
         </exec>
         <echo message="PHP CodeSniffer complete, logged to ${phptools.phpcs.report}" level="${phptools.phpcs.echolevel}"/>
