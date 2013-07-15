@@ -129,7 +129,7 @@
     <target name="phpdox.exists" unless="phptools.phpdox.run" description="Test that the phpdox phar is available"
             depends="tools-init">
         <available property="phptools.phpdox.run" file="${phptools.phpdox.phar}" />
-        <available property="phpdox.config.npcopy" file="${phptools.phpdox.config}" />
+        <available property="phptools.phpdox.config.nocopy" file="${phptools.phpdox.config}" />
     </target>
     <target name="phpdox.copy" if="phptools.phpdox.run" unless="phptools.phpdox.config.nocopy"
         description="Copy a phpDox config file with sensible defaults if none exists">
