@@ -70,7 +70,7 @@
             <filterset filtersfile="${phptools.properties.filter}"/>
         </copy>
     </target>
-    <target name="phpunit" depends="phpunit.exists, phpunit.bootstrap.copy, phpunit.config.copy" if="${phptools.phpunit.run}"
+    <target name="phpunit" depends="tools-init, phpunit.exists, phpunit.bootstrap.copy, phpunit.config.copy" if="${phptools.phpunit.run}"
         description="Run unit tests with PHPUnit">
         <echo message="Running PHPUnit tests" level="${phptools.phpunit.echolevel}" />
         <exec dir="${phptools.builddir}" executable="${phptools.phpunit.phar}" failonerror="${phptools.phpunit.failonerror}">
@@ -93,7 +93,7 @@
             <filterset filtersfile="${phptools.properties.filter}"/>
         </copy>
     </target>
-    <target name="behat" depends="behat.exists, behat.config.copy" if="${phptools.behat.run}" description="Calculate software metrics using PHP_Depend">
+    <target name="behat" depends="tools-init, behat.exists, behat.config.copy" if="${phptools.behat.run}" description="Calculate software metrics using PHP_Depend">
         <echo message="Behat found, running BDD tests" level="${phptools.behat.echolevel}" />
         <exec dir="${phptools.builddir}" executable="${phptools.behat.phar}" failonerror="${phptools.behat.failonerror}">
             <arg value="--config" />
@@ -111,11 +111,14 @@
     <target name="phpspec2.exists" unless="phpspec2.run">
         <available property="phptools.phpspec2.run" file="${phptools.phpspec2.phar}" />
     </target>
-    <target name="phpspec2" depends="phpspec2.exists" if="${phptools.phpspec2.run}" description="Calculate software metrics using PHP_Depend">
+    <target name="phpspec2" depends="tools-init, phpspec2.exists" if="${phptools.phpspec2.run}" description="Calculate software metrics using PHP_Depend">
         <echo message="PHPSpec2 found, running spec tests" level="${phptools.phpspec2.echolevel}"/>
-        <exec dir="${phptools.builddir}" executable="${phptools.phpspec2.phar}" failonerror="${phptools.phpspec2.failonerror}">
+        <exec executable="${phptools.phpspec2.phar}" failonerror="${phptools.phpspec2.failonerror}">
+            <redirector output="${phptools.phpspec2.log}" alwayslog="true"/>
             <arg value="run" />
             <arg value="--no-interaction" />
+            <arg value="--no-code-generation" />
+            <arg value="--format=junit" />
             <arg path="${phptools.phpspec2.specs}" />
         </exec>
         <echo message="Spec tests complete" level="${phptools.phpspec2.echolevel}" />
@@ -134,7 +137,7 @@
             <filterset filtersfile="${phptools.properties.filter}"/>
         </copy>
     </target>
-    <target name="phpdox" depends="phpdox.exists, phpdox.copy" if="${phptools.phpdox.run}"
+    <target name="phpdox" depends="tools-init, phpdox.exists, phpdox.copy" if="${phptools.phpdox.run}"
         description="Generate API documentation using phpDox">
         <echo message="Generating phpdox in ${phptools.phpdox.output}" level="${phptools.phpdox.echolevel}"/>
         <exec dir="${phptools.builddir}" executable="${phptools.phpdox.phar}" failonerror="${phptools.phpdox.failonerror}">
@@ -147,7 +150,7 @@
     <target name="pdepend.exists" unless="phptools.pdepend.run">
         <available property="phptools.pdepend.run" file="${phptools.pdepend.phar}" />
     </target>
-    <target name="pdepend" depends="pdepend.exists" if="${phptools.pdepend.run}"
+    <target name="pdepend" depends="tools-init, pdepend.exists" if="${phptools.pdepend.run}"
         description="Calculate software metrics using PHP_Depend">
         <echo message="Calculating software metrics using PHP_Depend" level="${phptools.pdepend.echolevel}"/>
         <exec dir="${phptools.builddir}" executable="${phptools.pdepend.phar}" failonerror="${phptools.pdepend.failonerror}">
@@ -163,7 +166,7 @@
     <target name="phpcpd.exists" unless="phptools.phpcpd.run">
         <available property="phptools.phpcpd.run" file="${phptools.phpcpd.phar}" />
     </target>
-    <target name="phpcpd" depends="phpcpd.exists" if="${phptools.phpcpd.run}"
+    <target name="phpcpd" depends="tools-init, phpcpd.exists" if="${phptools.phpcpd.run}"
         description="Find duplicate code using PHPCPD">
         <echo message="Find duplicate code using PHPCPD: (${phptools.phpcpd.phar})" level="${phptools.phpcpd.echolevel}" />
         <exec dir="${phptools.builddir}" executable="${phptools.phpcpd.phar}" failonerror="${phptools.phpcpd.failonerror}">
@@ -178,7 +181,7 @@
     <target name="phpcb.exists">
         <available property="phptools.phpcb.run" file="${phptools.phpcb.phar}" />
     </target>
-    <target name="phpcb" depends="phpcb.exists" if="${phptools.phpcb.run}"
+    <target name="phpcb" depends="tools-init, phpcb.exists" if="${phptools.phpcb.run}"
         description="Aggregate tool output with PHP_CodeBrowser">
         <echo message="Beginning PHP_CodeBrowser aggregation" level="${phptools.phpcb.echolevel}" />
         <exec dir="${phptools.builddir}" executable="${phptools.phpcb.phar}" failonerror="${phptools.phpcb.failonerror}">
@@ -207,7 +210,7 @@
     <target name="phploc.exists" unless="phptools.phploc.run">
         <available property="phptools.phploc.run" file="${phptools.phploc.phar}"/>
     </target>
-    <target name="phploc" depends="phploc.exists" if="${phptools.phploc.run}" description="Measure project size using PHPLOC">
+    <target name="phploc" depends="tools-init, phploc.exists" if="${phptools.phploc.run}" description="Measure project size using PHPLOC">
         <echo message="Running PHPLOC" level="${phptools.phploc.echolevel}"/>
         <exec dir="${phptools.builddir}" executable="${phptools.phploc.phar}" failonerror="${phptools.phploc.failonerror}">
             <arg value="--log-csv" />
@@ -221,16 +224,21 @@
     <target name="phpcs.exists" unless="phptools.phpcs.run">
         <available property="phptools.phpcs.run" file="${phptools.phpcs.phar}" />
     </target>
-    <target name="phpcs-ci" depends="phpcs.exists" if="${phptools.phpcs.run}" description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
+    <target name="phpcs-ci" depends="tools-init, phpcs.exists" if="${phptools.phpcs.run}" description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
         <echo message="Running PHP CodeSniffer: ${phptools.phpcs.phar}" level="${phptools.phpcs.echolevel}"/>
         <exec dir="${phptools.builddir}" executable="${phptools.phpcs.phar}" failonerror="${phptools.phpcs.failonerror}">
             <arg value="--standard=${phptools.phpcs.standard}" />
             <arg value="--report=${phptools.phpcs.report-format}" />
             <arg value="--report-file=${phptools.phpcs.report}" />
-            <arg value="--report-summary" />
             <arg path="${phptools.phpcs.srcdir}" />
         </exec>
         <echo message="PHP CodeSniffer complete, logged to ${phptools.phpcs.report}" level="${phptools.phpcs.echolevel}"/>
+    </target>
+    <target name="phpcs" depends="tools-init, phpcs.exists" description="Find coding standard violations using PHP_CodeSniffer">
+        <exec dir="${phptools.builddir}" executable="${phptools.phpcs.phar}">
+            <arg value="--standard=${phptools.phpcs.standard}" />
+            <arg path="${phptools.phpcs.srcdir}" />
+        </exec>
     </target>
 
     <!-- PHP Mess Detector -->
@@ -244,7 +252,7 @@
             <filterset filtersfile="${phptools.properties.filter}"/>
         </copy>
     </target>
-    <target name="phpmd-ci" depends="phpmd.exists, phpmd.copy" if="${phptools.phpmd.run}" description="Perform project mess detection using PHPMD">
+    <target name="phpmd-ci" depends="tools-init, phpmd.exists, phpmd.copy" if="${phptools.phpmd.run}" description="Perform project mess detection using PHPMD">
         <echo message="Running PHP Mess Detector" level="${phptools.phpmd.echolevel}"/>
         <copy file="${phptools.phpmd.dist}" tofile="${phptools.phpmd.config}" overwrite="false" filtering="true">
             <filterset filtersfile="${phptools.properties.filter}"/>
@@ -255,6 +263,18 @@
             <arg value="${phptools.phpmd.config}" />
             <arg value="--reportfile" />
             <arg value="${phptools.phpmd.reportfile}" />
+        </exec>
+        <echo message="Mess Detection complete, logged to ${phptools.phpmd.reportfile}" level="${phptools.phpmd.echolevel}"/>
+    </target>
+    <target name="phpmd" depends="tools-init, phpmd.exists, phpmd.copy" if="${phptools.phpmd.run}" description="Perform project mess detection using PHPMD">
+        <echo message="Running PHP Mess Detector" level="${phptools.phpmd.echolevel}"/>
+        <copy file="${phptools.phpmd.dist}" tofile="${phptools.phpmd.config}" overwrite="false" filtering="true">
+            <filterset filtersfile="${phptools.properties.filter}"/>
+        </copy>
+        <exec dir="${phptools.builddir}" executable="${phptools.phpmd.phar}" failonerror="${phptools.phpmd.failonerror}">
+            <arg path="${phptools.phpmd.srcdir}" />
+            <arg value="text" />
+            <arg value="${phptools.phpmd.config}" />
         </exec>
         <echo message="Mess Detection complete, logged to ${phptools.phpmd.reportfile}" level="${phptools.phpmd.echolevel}"/>
     </target>
