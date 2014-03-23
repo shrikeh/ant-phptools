@@ -14,7 +14,7 @@
         <available property="composer.run" file="${composer.phar}" />
     </target>
     <!-- Self-update composer -->
-    <target name="self-update" if="composer.self-update" description="Self-update Composer">
+    <target name="self-update" if="composer.self-update" unless="composer.installed" description="Self-update Composer">
         <echo message="Self-updating composer" level="debug"/>
         <exec executable="${composer.phar}">
             <arg value="self-update" />
@@ -24,10 +24,18 @@
         <echo message="composer self-update complete" level="debug"/>
     </target>
 
-    <target name="composer" depends="init, self-update" if="${composer.run}">
-        <condition property="composer.dev" value="--dev" else="--no-dev">
-             <isset property="phptools.env" />
-        </condition>
+    <target name="self-install" unless="composer.run" depends='exists' description="Fetch Composer if it doesn't exist">
+        <echo message="Self-installing composer" level="debug"/>
+        <property name="composer.installed" value="1"/>
+        <property name="composer.run" value="1" />
+        <exec executable="/bin/bash">
+            <arg value="-c" />
+            <arg value="curl -s https://getcomposer.org/installer | php" />
+        </exec>
+        <echo message="composer self-install complete" level="debug"/>
+    </target>
+
+    <target name="composer" depends="init, self-install, self-update" if="composer.run">
         <condition property="composer.command" value="update" else="install">
             <available file="${composer.lock}"/>
         </condition>
@@ -36,7 +44,7 @@
             <arg value="${composer.command}" />
             <arg value="--no-interaction" />
             <arg value="--optimize-autoloader" />
-            <arg value="${phptools/composer.dev}" />
+            <arg value="--dev" />
         </exec>
         <echo message="composer ${composer.command} complete" level="debug"/>
     </target>
