@@ -3,7 +3,7 @@
     "description": "Composer-friendly implementation of Jenkins PHP build tools",
     "homepage": "https://github.com/shrikeh/ant-phptools",
     "type": "library",
-    "license": "proprietary",
+    "license": "MIT",
     "authors": [
         {
             "name": "Richard George",
